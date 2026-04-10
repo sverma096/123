@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>LexVoice SaaS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin:0;
+  font-family: 'Segoe UI';
+  background:#0e1425;
+  color:white;
+}
+
+.container {
+  display:flex;
+  height:100vh;
+}
+
+.sidebar {
+  width:260px;
+  background:#11172b;
+  padding:20px;
+}
+
+.sidebar h2 {
+  margin:0;
+}
+
+.main {
+  flex:1;
+  padding:20px;
+}
+
+textarea {
+  width:100%;
+  height:250px;
+  border-radius:10px;
+  border:none;
+  padding:10px;
+}
+
+button {
+  padding:10px;
+  margin:5px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.primary { background:#4c6fff; color:white; }
+.secondary { background:#333; color:white; }
+
+.row {
+  display:flex;
+  gap:10px;
+  margin:10px 0;
+}
+
+.preview {
+  background:#1a223a;
+  padding:15px;
+  border-radius:10px;
+  margin-top:15px;
+  white-space:pre-wrap;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="sidebar">
+  <h2>LexVoice</h2>
+  <p>Voice Legal Tool</p>
+</div>
+
+<div class="main">
+
+<h2>Voice Draft</h2>
+
+<button onclick="start()">🎤 Start</button>
+<button onclick="stop()">⏹ Stop</button>
+
+<textarea id="text"></textarea>
+
+<div class="row">
+<select id="format">
+  <option value="legal">Legal</option>
+  <option value="a4">A4</option>
+</select>
+
+<select id="filetype">
+  <option value="word">Word</option>
+  <option value="pdf">PDF</option>
+</select>
+</div>
+
+<input id="title" value="Legal Document"/>
+
+<div>
+<label><input type="checkbox" id="sign" checked> Signature</label>
+<label><input type="checkbox" id="stamp" checked> Stamp</label>
+</div>
+
+<button class="secondary" onclick="preview()">Preview</button>
+
+<form method="POST" action="/generate">
+<input type="hidden" name="text" id="ftext">
+<input type="hidden" name="title" id="ftitle">
+<input type="hidden" name="format" id="fformat">
+<input type="hidden" name="filetype" id="ffile">
+
+<button class="primary" onclick="submitForm()">Download</button>
+</form>
+
+<div class="preview" id="previewBox"></div>
+
+</div>
+</div>
+
+<script>
+let rec;
+
+function start(){
+ rec = new (window.SpeechRecognition||window.webkitSpeechRecognition)();
+ rec.lang="hi-IN";
+ rec.continuous=true;
+
+ rec.onresult=e=>{
+  let t="";
+  for(let i=0;i<e.results.length;i++){
+   t+=e.results[i][0].transcript;
+  }
+  document.getElementById("text").value=t;
+ };
+
+ rec.start();
+}
+
+function stop(){ if(rec) rec.stop(); }
+
+function preview(){
+ fetch("/preview",{
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({
+   text:document.getElementById("text").value,
+   title:document.getElementById("title").value,
+   sign:document.getElementById("sign").checked,
+   stamp:document.getElementById("stamp").checked
+  })
+ }).then(r=>r.json()).then(d=>{
+  document.getElementById("previewBox").innerText=d.preview;
+ });
+}
+
+function submitForm(){
+ document.getElementById("ftext").value=document.getElementById("text").value;
+ document.getElementById("ftitle").value=document.getElementById("title").value;
+ document.getElementById("fformat").value=document.getElementById("format").value;
+ document.getElementById("ffile").value=document.getElementById("filetype").value;
+}
+</script>
+
+</body>
+</html>
