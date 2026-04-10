@@ -1,0 +1,147 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LexVoice Studio</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">LV</div>
+        <div>
+          <h1>LexVoice</h1>
+          <p>Drafting Studio</p>
+        </div>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>Voice Input</h3>
+        <p>Speak in Hindi, English, or Hinglish. Use commands like “full stop”, “comma”, “new paragraph”.</p>
+      </div>
+
+      <div class="sidebar-card">
+        <h3>Export Flow</h3>
+        <p>Choose paper size, preview the draft, then export as Word or PDF with legal formatting.</p>
+      </div>
+
+      <div class="sidebar-footer">
+        <span class="dot"></span>
+        <span id="statusText">Ready</span>
+      </div>
+    </aside>
+
+    <main class="main-panel">
+      <header class="topbar">
+        <div>
+          <h2>Create Legal Drafts Faster</h2>
+          <p>Modern voice-to-document workflow with clean formatting and instant export.</p>
+        </div>
+        <div class="topbar-actions">
+          <button class="btn btn-secondary" type="button" id="previewBtnTop">Live Preview</button>
+          <button class="btn btn-primary" type="submit" form="draftForm">Export File</button>
+        </div>
+      </header>
+
+      <div class="grid">
+        <section class="panel composer">
+          <div class="panel-header">
+            <div>
+              <h3>Document Composer</h3>
+              <p>Dictate, edit, and prepare your final draft.</p>
+            </div>
+            <div class="voice-controls">
+              <button class="icon-btn" type="button" id="startBtn" title="Start voice typing">🎤</button>
+              <button class="icon-btn muted" type="button" id="stopBtn" title="Stop voice typing">⏹</button>
+              <button class="icon-btn muted" type="button" id="clearBtn" title="Clear text">🗑</button>
+            </div>
+          </div>
+
+          <form id="draftForm" action="/generate" method="POST">
+            <div class="form-grid">
+              <div class="field">
+                <label for="title">Document Title</label>
+                <input id="title" name="title" type="text" value="Legal Document" placeholder="Enter title" />
+              </div>
+
+              <div class="field">
+                <label for="languageMode">Voice Mode</label>
+                <select id="languageMode">
+                  <option value="hi-IN" selected>Hindi + English Mixed</option>
+                  <option value="en-IN">English</option>
+                  <option value="hi-IN">Hindi</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="format">Paper Size</label>
+                <select id="format" name="format">
+                  <option value="legal">Legal Paper</option>
+                  <option value="a4">A4</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="filetype">File Type</label>
+                <select id="filetype" name="filetype">
+                  <option value="word">Word (.docx)</option>
+                  <option value="pdf">PDF (.pdf)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="toggle-row">
+              <label class="toggle">
+                <input type="checkbox" name="ai_enabled" id="ai_enabled" checked />
+                <span>Smart formatting</span>
+              </label>
+              <label class="toggle">
+                <input type="checkbox" name="signature" id="signature" checked />
+                <span>Signature block</span>
+              </label>
+              <label class="toggle">
+                <input type="checkbox" name="stamp" id="stamp" checked />
+                <span>Stamp placeholder</span>
+              </label>
+            </div>
+
+            <div class="editor-wrap">
+              <label for="text" class="editor-label">Draft Content</label>
+              <textarea id="text" name="text" placeholder="Start speaking or type your content here..."></textarea>
+            </div>
+
+            <div class="bottom-actions">
+              <button class="btn btn-secondary" type="button" id="previewBtn">Preview Draft</button>
+              <button class="btn btn-ghost" type="button" id="sampleBtn">Load Sample</button>
+              <button class="btn btn-primary" type="submit">Download Final File</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel preview-panel">
+          <div class="panel-header">
+            <div>
+              <h3>Preview</h3>
+              <p>See how the final draft will look before exporting.</p>
+            </div>
+            <span class="preview-badge">Formatted Output</span>
+          </div>
+
+          <div id="previewBox" class="preview-box">
+            <div class="preview-placeholder">
+              <div class="preview-icon">📄</div>
+              <h4>No preview yet</h4>
+              <p>Click “Preview Draft” to generate the formatted legal document view.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="/static/app.js"></script>
+</body>
+</html>
