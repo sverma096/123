@@ -1,168 +1,728 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>LexVoice SaaS</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LexVoice AI Studio</title>
+  <style>
+    :root{
+      --bg:#07111f;
+      --bg2:#0d1830;
+      --panel:rgba(15,23,42,.72);
+      --panel2:rgba(17,25,44,.88);
+      --line:rgba(255,255,255,.08);
+      --text:#eef4ff;
+      --muted:#98a8c8;
+      --primary:#6ea8fe;
+      --primary2:#8b5cf6;
+      --accent:#22c55e;
+      --danger:#ef4444;
+      --shadow:0 24px 80px rgba(0,0,0,.35);
+      --radius:22px;
+    }
 
-<style>
-body {
-  margin:0;
-  font-family: 'Segoe UI';
-  background:#0e1425;
-  color:white;
-}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:Inter,Segoe UI,Arial,sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(circle at 10% 0%, rgba(110,168,254,.22), transparent 24%),
+        radial-gradient(circle at 100% 20%, rgba(139,92,246,.18), transparent 22%),
+        linear-gradient(180deg,var(--bg) 0%, var(--bg2) 100%);
+      overflow-x:hidden;
+    }
 
-.container {
-  display:flex;
-  height:100vh;
-}
+    .app{
+      min-height:100vh;
+      display:grid;
+      grid-template-columns: 300px 1fr;
+    }
 
-.sidebar {
-  width:260px;
-  background:#11172b;
-  padding:20px;
-}
+    .sidebar{
+      border-right:1px solid var(--line);
+      background:rgba(7,13,24,.62);
+      backdrop-filter: blur(18px);
+      padding:24px;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+    }
 
-.sidebar h2 {
-  margin:0;
-}
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+    }
 
-.main {
-  flex:1;
-  padding:20px;
-}
+    .brand-icon{
+      width:54px;
+      height:54px;
+      border-radius:18px;
+      display:grid;
+      place-items:center;
+      font-weight:800;
+      background:linear-gradient(135deg,var(--primary),var(--primary2));
+      box-shadow:var(--shadow);
+    }
 
-textarea {
-  width:100%;
-  height:250px;
-  border-radius:10px;
-  border:none;
-  padding:10px;
-}
+    .brand h1{
+      margin:0;
+      font-size:20px;
+    }
 
-button {
-  padding:10px;
-  margin:5px;
-  border:none;
-  border-radius:8px;
-  cursor:pointer;
-}
+    .brand p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:13px;
+    }
 
-.primary { background:#4c6fff; color:white; }
-.secondary { background:#333; color:white; }
+    .side-card{
+      background:rgba(255,255,255,.03);
+      border:1px solid var(--line);
+      border-radius:18px;
+      padding:16px;
+    }
 
-.row {
-  display:flex;
-  gap:10px;
-  margin:10px 0;
-}
+    .side-card h3{
+      margin:0 0 8px;
+      font-size:14px;
+    }
 
-.preview {
-  background:#1a223a;
-  padding:15px;
-  border-radius:10px;
-  margin-top:15px;
-  white-space:pre-wrap;
-}
-</style>
+    .side-card p{
+      margin:0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.65;
+    }
+
+    .status{
+      margin-top:auto;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      background:rgba(255,255,255,.03);
+      border:1px solid var(--line);
+      padding:14px 16px;
+      border-radius:16px;
+      color:var(--muted);
+    }
+
+    .status-dot{
+      width:10px;
+      height:10px;
+      border-radius:999px;
+      background:var(--accent);
+      box-shadow:0 0 12px var(--accent);
+    }
+
+    .main{
+      padding:28px;
+    }
+
+    .hero{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:18px;
+      margin-bottom:22px;
+    }
+
+    .hero h2{
+      margin:0 0 8px;
+      font-size:32px;
+      line-height:1.1;
+    }
+
+    .hero p{
+      margin:0;
+      color:var(--muted);
+      max-width:760px;
+    }
+
+    .hero-actions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+    }
+
+    .layout{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:22px;
+    }
+
+    .panel{
+      background:var(--panel2);
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+      overflow:hidden;
+    }
+
+    .panel-head{
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:16px;
+      padding:22px 22px 14px;
+    }
+
+    .panel-head h3{
+      margin:0 0 6px;
+      font-size:18px;
+    }
+
+    .panel-head p{
+      margin:0;
+      color:var(--muted);
+      font-size:14px;
+    }
+
+    .voice-actions{
+      display:flex;
+      gap:10px;
+    }
+
+    .round-btn{
+      width:46px;
+      height:46px;
+      border:none;
+      border-radius:14px;
+      cursor:pointer;
+      color:white;
+      font-size:18px;
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--line);
+    }
+
+    .round-btn.primary{
+      background:linear-gradient(135deg,var(--primary),var(--primary2));
+      border:none;
+    }
+
+    .content{
+      padding:0 22px 22px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:16px;
+    }
+
+    .field{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+
+    .field label,.editor-label{
+      font-size:13px;
+      font-weight:600;
+      color:#cfdbf8;
+    }
+
+    input[type="text"], select, textarea{
+      width:100%;
+      border-radius:16px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      padding:14px 16px;
+      outline:none;
+    }
+
+    input[type="text"]:focus, select:focus, textarea:focus{
+      border-color:rgba(110,168,254,.8);
+      box-shadow:0 0 0 4px rgba(110,168,254,.14);
+    }
+
+    select option{
+      color:#111827;
+    }
+
+    .chips{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      margin:18px 0;
+    }
+
+    .chip{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      padding:10px 14px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:rgba(255,255,255,.03);
+      font-size:14px;
+      color:#deE8ff;
+    }
+
+    .editor-wrap{
+      border:1px solid var(--line);
+      border-radius:20px;
+      overflow:hidden;
+      background:rgba(255,255,255,.03);
+    }
+
+    .editor-bar{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      padding:14px 16px;
+      border-bottom:1px solid var(--line);
+      color:#d8e4ff;
+      font-size:14px;
+    }
+
+    .editor-bar small{
+      color:var(--muted);
+    }
+
+    textarea{
+      min-height:400px;
+      resize:vertical;
+      border:none;
+      border-radius:0;
+      background:transparent;
+      line-height:1.75;
+      font-size:15px;
+    }
+
+    .actions{
+      margin-top:18px;
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+    }
+
+    .btn{
+      border:none;
+      border-radius:16px;
+      padding:12px 18px;
+      font-weight:700;
+      cursor:pointer;
+    }
+
+    .btn-primary{
+      color:white;
+      background:linear-gradient(135deg,var(--primary),var(--primary2));
+    }
+
+    .btn-secondary{
+      color:var(--text);
+      background:rgba(255,255,255,.06);
+      border:1px solid var(--line);
+    }
+
+    .btn-danger{
+      color:white;
+      background:var(--danger);
+    }
+
+    .preview-tag{
+      padding:8px 12px;
+      border-radius:999px;
+      font-size:12px;
+      color:#d8e8ff;
+      border:1px solid rgba(110,168,254,.25);
+      background:rgba(110,168,254,.12);
+    }
+
+    .preview-box{
+      margin:0 22px 22px;
+      min-height:560px;
+      border-radius:20px;
+      border:1px solid var(--line);
+      background:linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
+      padding:22px;
+      overflow:auto;
+      white-space:pre-wrap;
+      line-height:1.8;
+    }
+
+    .empty{
+      min-height:500px;
+      display:grid;
+      place-items:center;
+      text-align:center;
+      color:var(--muted);
+    }
+
+    .empty .icon{
+      font-size:38px;
+      margin-bottom:12px;
+    }
+
+    .pill-ai{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      margin-left:8px;
+      font-size:12px;
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(34,197,94,.2);
+      background:rgba(34,197,94,.12);
+      color:#bcf7d2;
+    }
+
+    .hint{
+      margin-top:10px;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    @media (max-width: 1100px){
+      .layout{grid-template-columns:1fr}
+    }
+
+    @media (max-width: 860px){
+      .app{grid-template-columns:1fr}
+      .sidebar{border-right:none;border-bottom:1px solid var(--line)}
+      .hero{flex-direction:column}
+    }
+
+    @media (max-width: 640px){
+      .main{padding:16px}
+      .grid{grid-template-columns:1fr}
+      .hero h2{font-size:24px}
+      .panel-head,.content{padding-left:16px;padding-right:16px}
+      .preview-box{margin-left:16px;margin-right:16px}
+      .editor-bar{flex-direction:column}
+    }
+  </style>
 </head>
-
 <body>
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">LV</div>
+        <div>
+          <h1>LexVoice AI</h1>
+          <p>Legal drafting studio</p>
+        </div>
+      </div>
 
-<div class="container">
+      <div class="side-card">
+        <h3>Language support</h3>
+        <p>Switch between Hindi, English, and Hinglish voice input directly from the editor panel.</p>
+      </div>
 
-<div class="sidebar">
-  <h2>LexVoice</h2>
-  <p>Voice Legal Tool</p>
-</div>
+      <div class="side-card">
+        <h3>AI mode</h3>
+        <p>Use smart cleanup for punctuation and formatting. If an OpenAI API key is configured, AI mode becomes much stronger.</p>
+      </div>
 
-<div class="main">
+      <div class="side-card">
+        <h3>Export</h3>
+        <p>Choose Legal or A4 paper and export as real Word or PDF files.</p>
+      </div>
 
-<h2>Voice Draft</h2>
+      <div class="status">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">Ready</span>
+      </div>
+    </aside>
 
-<button onclick="start()">🎤 Start</button>
-<button onclick="stop()">⏹ Stop</button>
+    <main class="main">
+      <header class="hero">
+        <div>
+          <h2>Create polished legal drafts with voice</h2>
+          <p>Use a modern drafting workspace with language switching, AI cleanup, live preview, and direct export.</p>
+        </div>
+        <div class="hero-actions">
+          <button class="btn btn-secondary" type="button" id="sampleBtn">Load Sample</button>
+          <button class="btn btn-primary" type="button" id="topPreviewBtn">Preview</button>
+        </div>
+      </header>
 
-<textarea id="text"></textarea>
+      <div class="layout">
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h3>Draft Composer
+                <span class="pill-ai" id="aiBadge">AI Ready</span>
+              </h3>
+              <p>Dictate, edit, format, and export from one place.</p>
+            </div>
+            <div class="voice-actions">
+              <button class="round-btn primary" type="button" id="startBtn" title="Start voice typing">🎤</button>
+              <button class="round-btn" type="button" id="stopBtn" title="Stop">⏹</button>
+              <button class="round-btn" type="button" id="clearBtn" title="Clear">🗑</button>
+            </div>
+          </div>
 
-<div class="row">
-<select id="format">
-  <option value="legal">Legal</option>
-  <option value="a4">A4</option>
-</select>
+          <div class="content">
+            <form id="draftForm" method="POST" action="/generate">
+              <div class="grid">
+                <div class="field">
+                  <label for="title">Document title</label>
+                  <input id="title" name="title" type="text" value="Legal Document" />
+                </div>
 
-<select id="filetype">
-  <option value="word">Word</option>
-  <option value="pdf">PDF</option>
-</select>
-</div>
+                <div class="field">
+                  <label for="doc_type">Document type</label>
+                  <select id="doc_type" name="doc_type">
+                    <option value="general">General</option>
+                    <option value="notice">Legal Notice</option>
+                    <option value="agreement">Agreement</option>
+                    <option value="reply">Reply / Response</option>
+                  </select>
+                </div>
 
-<input id="title" value="Legal Document"/>
+                <div class="field">
+                  <label for="language_mode">Language</label>
+                  <select id="language_mode" name="language_mode">
+                    <option value="hinglish">Hindi + English (Hinglish)</option>
+                    <option value="english">English</option>
+                    <option value="hindi">Hindi</option>
+                  </select>
+                </div>
 
-<div>
-<label><input type="checkbox" id="sign" checked> Signature</label>
-<label><input type="checkbox" id="stamp" checked> Stamp</label>
-</div>
+                <div class="field">
+                  <label for="format">Paper size</label>
+                  <select id="format" name="format">
+                    <option value="legal">Legal Paper</option>
+                    <option value="a4">A4</option>
+                  </select>
+                </div>
 
-<button class="secondary" onclick="preview()">Preview</button>
+                <div class="field">
+                  <label for="filetype">Export type</label>
+                  <select id="filetype" name="filetype">
+                    <option value="word">Word (.docx)</option>
+                    <option value="pdf">PDF (.pdf)</option>
+                  </select>
+                </div>
+              </div>
 
-<form method="POST" action="/generate">
-<input type="hidden" name="text" id="ftext">
-<input type="hidden" name="title" id="ftitle">
-<input type="hidden" name="format" id="fformat">
-<input type="hidden" name="filetype" id="ffile">
+              <div class="chips">
+                <label class="chip">
+                  <input type="checkbox" id="use_ai" name="use_ai" checked />
+                  AI cleanup
+                </label>
 
-<button class="primary" onclick="submitForm()">Download</button>
-</form>
+                <label class="chip">
+                  <input type="checkbox" id="signature" name="signature" checked />
+                  Signature block
+                </label>
 
-<div class="preview" id="previewBox"></div>
+                <label class="chip">
+                  <input type="checkbox" id="stamp" name="stamp" checked />
+                  Stamp placeholder
+                </label>
+              </div>
 
-</div>
-</div>
+              <div class="editor-wrap">
+                <div class="editor-bar">
+                  <span>Draft content</span>
+                  <small>Commands: full stop, comma, new paragraph, next line</small>
+                </div>
+                <textarea id="text" name="text" placeholder="Start speaking or type your legal content here..."></textarea>
+              </div>
 
-<script>
-let rec;
+              <div class="actions">
+                <button class="btn btn-secondary" type="button" id="previewBtn">Preview Draft</button>
+                <button class="btn btn-primary" type="submit">Download Final File</button>
+              </div>
 
-function start(){
- rec = new (window.SpeechRecognition||window.webkitSpeechRecognition)();
- rec.lang="hi-IN";
- rec.continuous=true;
+              <div class="hint">
+                {% if openai_enabled %}
+                  OpenAI API detected. AI mode will use the API.
+                {% else %}
+                  OpenAI API not configured. AI mode will use local smart cleanup only.
+                {% endif %}
+              </div>
+            </form>
+          </div>
+        </section>
 
- rec.onresult=e=>{
-  let t="";
-  for(let i=0;i<e.results.length;i++){
-   t+=e.results[i][0].transcript;
-  }
-  document.getElementById("text").value=t;
- };
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <h3>Live Preview</h3>
+              <p>Review the final formatted draft before exporting.</p>
+            </div>
+            <span class="preview-tag">Formatted Output</span>
+          </div>
 
- rec.start();
-}
+          <div class="preview-box" id="previewBox">
+            <div class="empty">
+              <div>
+                <div class="icon">📄</div>
+                <h3>No preview yet</h3>
+                <p>Click Preview Draft to generate a polished output.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
 
-function stop(){ if(rec) rec.stop(); }
+  <script>
+    let recognition = null;
+    let isListening = false;
 
-function preview(){
- fetch("/preview",{
-  method:"POST",
-  headers:{"Content-Type":"application/json"},
-  body:JSON.stringify({
-   text:document.getElementById("text").value,
-   title:document.getElementById("title").value,
-   sign:document.getElementById("sign").checked,
-   stamp:document.getElementById("stamp").checked
-  })
- }).then(r=>r.json()).then(d=>{
-  document.getElementById("previewBox").innerText=d.preview;
- });
-}
+    const textEl = document.getElementById("text");
+    const statusText = document.getElementById("statusText");
+    const statusDot = document.getElementById("statusDot");
 
-function submitForm(){
- document.getElementById("ftext").value=document.getElementById("text").value;
- document.getElementById("ftitle").value=document.getElementById("title").value;
- document.getElementById("fformat").value=document.getElementById("format").value;
- document.getElementById("ffile").value=document.getElementById("filetype").value;
-}
-</script>
+    function setStatus(message, active=false){
+      statusText.textContent = message;
+      statusDot.style.background = active ? "#ef4444" : "#22c55e";
+      statusDot.style.boxShadow = active ? "0 0 12px #ef4444" : "0 0 12px #22c55e";
+    }
 
+    function getSpeechLang(mode){
+      if(mode === "english") return "en-IN";
+      if(mode === "hindi") return "hi-IN";
+      return "hi-IN";
+    }
+
+    function escapeHtml(str){
+      return str
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;");
+    }
+
+    function renderPreview(text){
+      const lines = text.split("\\n");
+      let html = "";
+      let titleDone = false;
+
+      for(const line of lines){
+        if(!line.trim()){
+          html += '<div style="height:10px"></div>';
+          continue;
+        }
+
+        if(!titleDone){
+          html += '<div style="text-align:center;font-weight:800;letter-spacing:.04em;margin-bottom:18px;">' + escapeHtml(line) + '</div>';
+          titleDone = true;
+        } else {
+          html += '<div style="margin-bottom:8px;">' + escapeHtml(line) + '</div>';
+        }
+      }
+
+      document.getElementById("previewBox").innerHTML = html;
+    }
+
+    async function previewDraft(){
+      const payload = {
+        title: document.getElementById("title").value,
+        text: textEl.value,
+        language_mode: document.getElementById("language_mode").value,
+        doc_type: document.getElementById("doc_type").value,
+        use_ai: document.getElementById("use_ai").checked,
+        signature: document.getElementById("signature").checked,
+        stamp: document.getElementById("stamp").checked
+      };
+
+      try{
+        const res = await fetch("/preview", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+        renderPreview(data.preview || "");
+      } catch(e){
+        document.getElementById("previewBox").innerHTML =
+          '<div class="empty"><div><div class="icon">⚠️</div><h3>Preview failed</h3><p>Please try again.</p></div></div>';
+      }
+    }
+
+    function startRecognition(){
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if(!SpeechRecognition){
+        alert("Speech recognition is not supported in this browser. Please use Chrome or Edge.");
+        return;
+      }
+
+      if(!recognition){
+        recognition = new SpeechRecognition();
+        recognition.continuous = true;
+        recognition.interimResults = true;
+
+        recognition.onstart = () => {
+          isListening = true;
+          setStatus("Listening", true);
+        };
+
+        recognition.onend = () => {
+          isListening = false;
+          setStatus("Ready", false);
+        };
+
+        recognition.onerror = (event) => {
+          setStatus("Error: " + event.error, false);
+        };
+
+        recognition.onresult = (event) => {
+          let finalText = textEl.dataset.finalText || "";
+          let interim = "";
+
+          for(let i = event.resultIndex; i < event.results.length; i++){
+            const transcript = event.results[i][0].transcript;
+            if(event.results[i].isFinal){
+              finalText += transcript + " ";
+            } else {
+              interim += transcript;
+            }
+          }
+
+          textEl.dataset.finalText = finalText;
+          textEl.value = (finalText + interim).trim();
+        };
+      }
+
+      recognition.lang = getSpeechLang(document.getElementById("language_mode").value);
+
+      try{
+        recognition.start();
+      } catch(e){}
+    }
+
+    function stopRecognition(){
+      if(recognition && isListening){
+        recognition.stop();
+      }
+    }
+
+    function clearDraft(){
+      textEl.value = "";
+      textEl.dataset.finalText = "";
+    }
+
+    function loadSample(){
+      textEl.value =
+`This agreement is made on this 10th day of April 2026 between the parties new paragraph
+The consultant shall provide advisory and implementation support as required by the company full stop new paragraph
+Payment shall be released within thirty days from the date of invoice comma subject to satisfactory completion of services full stop`;
+      textEl.dataset.finalText = textEl.value + " ";
+    }
+
+    document.getElementById("startBtn").addEventListener("click", startRecognition);
+    document.getElementById("stopBtn").addEventListener("click", stopRecognition);
+    document.getElementById("clearBtn").addEventListener("click", clearDraft);
+    document.getElementById("sampleBtn").addEventListener("click", loadSample);
+    document.getElementById("previewBtn").addEventListener("click", previewDraft);
+    document.getElementById("topPreviewBtn").addEventListener("click", previewDraft);
+
+    document.getElementById("language_mode").addEventListener("change", () => {
+      if(recognition && isListening){
+        recognition.stop();
+      }
+      setStatus("Ready", false);
+    });
+  </script>
 </body>
 </html>
