@@ -1,147 +1,168 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>LexVoice Studio</title>
-  <link rel="stylesheet" href="/static/style.css" />
+<title>LexVoice SaaS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body {
+  margin:0;
+  font-family: 'Segoe UI';
+  background:#0e1425;
+  color:white;
+}
+
+.container {
+  display:flex;
+  height:100vh;
+}
+
+.sidebar {
+  width:260px;
+  background:#11172b;
+  padding:20px;
+}
+
+.sidebar h2 {
+  margin:0;
+}
+
+.main {
+  flex:1;
+  padding:20px;
+}
+
+textarea {
+  width:100%;
+  height:250px;
+  border-radius:10px;
+  border:none;
+  padding:10px;
+}
+
+button {
+  padding:10px;
+  margin:5px;
+  border:none;
+  border-radius:8px;
+  cursor:pointer;
+}
+
+.primary { background:#4c6fff; color:white; }
+.secondary { background:#333; color:white; }
+
+.row {
+  display:flex;
+  gap:10px;
+  margin:10px 0;
+}
+
+.preview {
+  background:#1a223a;
+  padding:15px;
+  border-radius:10px;
+  margin-top:15px;
+  white-space:pre-wrap;
+}
+</style>
 </head>
+
 <body>
-  <div class="app-shell">
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="brand-mark">LV</div>
-        <div>
-          <h1>LexVoice</h1>
-          <p>Drafting Studio</p>
-        </div>
-      </div>
 
-      <div class="sidebar-card">
-        <h3>Voice Input</h3>
-        <p>Speak in Hindi, English, or Hinglish. Use commands like “full stop”, “comma”, “new paragraph”.</p>
-      </div>
+<div class="container">
 
-      <div class="sidebar-card">
-        <h3>Export Flow</h3>
-        <p>Choose paper size, preview the draft, then export as Word or PDF with legal formatting.</p>
-      </div>
+<div class="sidebar">
+  <h2>LexVoice</h2>
+  <p>Voice Legal Tool</p>
+</div>
 
-      <div class="sidebar-footer">
-        <span class="dot"></span>
-        <span id="statusText">Ready</span>
-      </div>
-    </aside>
+<div class="main">
 
-    <main class="main-panel">
-      <header class="topbar">
-        <div>
-          <h2>Create Legal Drafts Faster</h2>
-          <p>Modern voice-to-document workflow with clean formatting and instant export.</p>
-        </div>
-        <div class="topbar-actions">
-          <button class="btn btn-secondary" type="button" id="previewBtnTop">Live Preview</button>
-          <button class="btn btn-primary" type="submit" form="draftForm">Export File</button>
-        </div>
-      </header>
+<h2>Voice Draft</h2>
 
-      <div class="grid">
-        <section class="panel composer">
-          <div class="panel-header">
-            <div>
-              <h3>Document Composer</h3>
-              <p>Dictate, edit, and prepare your final draft.</p>
-            </div>
-            <div class="voice-controls">
-              <button class="icon-btn" type="button" id="startBtn" title="Start voice typing">🎤</button>
-              <button class="icon-btn muted" type="button" id="stopBtn" title="Stop voice typing">⏹</button>
-              <button class="icon-btn muted" type="button" id="clearBtn" title="Clear text">🗑</button>
-            </div>
-          </div>
+<button onclick="start()">🎤 Start</button>
+<button onclick="stop()">⏹ Stop</button>
 
-          <form id="draftForm" action="/generate" method="POST">
-            <div class="form-grid">
-              <div class="field">
-                <label for="title">Document Title</label>
-                <input id="title" name="title" type="text" value="Legal Document" placeholder="Enter title" />
-              </div>
+<textarea id="text"></textarea>
 
-              <div class="field">
-                <label for="languageMode">Voice Mode</label>
-                <select id="languageMode">
-                  <option value="hi-IN" selected>Hindi + English Mixed</option>
-                  <option value="en-IN">English</option>
-                  <option value="hi-IN">Hindi</option>
-                </select>
-              </div>
+<div class="row">
+<select id="format">
+  <option value="legal">Legal</option>
+  <option value="a4">A4</option>
+</select>
 
-              <div class="field">
-                <label for="format">Paper Size</label>
-                <select id="format" name="format">
-                  <option value="legal">Legal Paper</option>
-                  <option value="a4">A4</option>
-                </select>
-              </div>
+<select id="filetype">
+  <option value="word">Word</option>
+  <option value="pdf">PDF</option>
+</select>
+</div>
 
-              <div class="field">
-                <label for="filetype">File Type</label>
-                <select id="filetype" name="filetype">
-                  <option value="word">Word (.docx)</option>
-                  <option value="pdf">PDF (.pdf)</option>
-                </select>
-              </div>
-            </div>
+<input id="title" value="Legal Document"/>
 
-            <div class="toggle-row">
-              <label class="toggle">
-                <input type="checkbox" name="ai_enabled" id="ai_enabled" checked />
-                <span>Smart formatting</span>
-              </label>
-              <label class="toggle">
-                <input type="checkbox" name="signature" id="signature" checked />
-                <span>Signature block</span>
-              </label>
-              <label class="toggle">
-                <input type="checkbox" name="stamp" id="stamp" checked />
-                <span>Stamp placeholder</span>
-              </label>
-            </div>
+<div>
+<label><input type="checkbox" id="sign" checked> Signature</label>
+<label><input type="checkbox" id="stamp" checked> Stamp</label>
+</div>
 
-            <div class="editor-wrap">
-              <label for="text" class="editor-label">Draft Content</label>
-              <textarea id="text" name="text" placeholder="Start speaking or type your content here..."></textarea>
-            </div>
+<button class="secondary" onclick="preview()">Preview</button>
 
-            <div class="bottom-actions">
-              <button class="btn btn-secondary" type="button" id="previewBtn">Preview Draft</button>
-              <button class="btn btn-ghost" type="button" id="sampleBtn">Load Sample</button>
-              <button class="btn btn-primary" type="submit">Download Final File</button>
-            </div>
-          </form>
-        </section>
+<form method="POST" action="/generate">
+<input type="hidden" name="text" id="ftext">
+<input type="hidden" name="title" id="ftitle">
+<input type="hidden" name="format" id="fformat">
+<input type="hidden" name="filetype" id="ffile">
 
-        <section class="panel preview-panel">
-          <div class="panel-header">
-            <div>
-              <h3>Preview</h3>
-              <p>See how the final draft will look before exporting.</p>
-            </div>
-            <span class="preview-badge">Formatted Output</span>
-          </div>
+<button class="primary" onclick="submitForm()">Download</button>
+</form>
 
-          <div id="previewBox" class="preview-box">
-            <div class="preview-placeholder">
-              <div class="preview-icon">📄</div>
-              <h4>No preview yet</h4>
-              <p>Click “Preview Draft” to generate the formatted legal document view.</p>
-            </div>
-          </div>
-        </section>
-      </div>
-    </main>
-  </div>
+<div class="preview" id="previewBox"></div>
 
-  <script src="/static/app.js"></script>
+</div>
+</div>
+
+<script>
+let rec;
+
+function start(){
+ rec = new (window.SpeechRecognition||window.webkitSpeechRecognition)();
+ rec.lang="hi-IN";
+ rec.continuous=true;
+
+ rec.onresult=e=>{
+  let t="";
+  for(let i=0;i<e.results.length;i++){
+   t+=e.results[i][0].transcript;
+  }
+  document.getElementById("text").value=t;
+ };
+
+ rec.start();
+}
+
+function stop(){ if(rec) rec.stop(); }
+
+function preview(){
+ fetch("/preview",{
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({
+   text:document.getElementById("text").value,
+   title:document.getElementById("title").value,
+   sign:document.getElementById("sign").checked,
+   stamp:document.getElementById("stamp").checked
+  })
+ }).then(r=>r.json()).then(d=>{
+  document.getElementById("previewBox").innerText=d.preview;
+ });
+}
+
+function submitForm(){
+ document.getElementById("ftext").value=document.getElementById("text").value;
+ document.getElementById("ftitle").value=document.getElementById("title").value;
+ document.getElementById("fformat").value=document.getElementById("format").value;
+ document.getElementById("ffile").value=document.getElementById("filetype").value;
+}
+</script>
+
 </body>
 </html>
